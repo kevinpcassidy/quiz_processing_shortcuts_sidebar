@@ -22,41 +22,29 @@ function selectColumnsDown() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const selection = sheet.getActiveRangeList();
 
-  if (!selection || selection.getRanges().length < 1) {
-    return "Please select at least one cell to start.";
+  if (!selection || selection.getRanges().length !== 2) {
+    return "Please select at least two cells.";
   }
 
   const ranges = selection.getRanges();
   const newRanges = [];
+  const MAX_ROWS = 50; // Fixed selection of 50 rows
 
   ranges.forEach(range => {
-    const col = range.getColumn();
     let startRow = range.getRow();
-    if (startRow === 1) startRow = 2;
+    const col = range.getColumn();
 
-    const filter = sheet.getFilter();
-    let lastVisibleRow = sheet.getLastRow();
+    if (startRow === 1) startRow = 2; // skip header
 
-    if (filter) {
-      const maxRow = filter.getFilterRange().getLastRow();
-      for (let r = maxRow; r >= startRow; r--) {
-        if (!sheet.isRowHiddenByFilter(r)) {
-          lastVisibleRow = r;
-          break;
-        }
-      }
-    }
-
-    if (startRow <= lastVisibleRow) {
-      newRanges.push(sheet.getRange(startRow, col, lastVisibleRow - startRow + 1));
-    }
+    // Simply extend 50 rows from the start position
+    newRanges.push(sheet.getRange(startRow, col, MAX_ROWS, 1));
   });
 
-  if (newRanges.length > 0) {
-    sheet.getRangeList(newRanges.map(r => r.getA1Notation())).activate();
-  }
+  // Activate the two extended ranges
+  const rangeList = sheet.getRangeList(newRanges.map(r => r.getA1Notation()));
+  rangeList.activate();
 
-  return "Selection extended to bottom visible row.";
+  return "Selection Ready for Grade Grabber.";
 }
 
 // 2️⃣ Fill average formulas (bulk for speed)
