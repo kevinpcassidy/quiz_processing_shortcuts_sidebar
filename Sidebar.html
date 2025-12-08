@@ -1,0 +1,48 @@
+<div style="font-family:Arial, sans-serif; font-size:12pt; padding:10px;">
+  <button id="selectColumns" style="width:100%; margin-bottom:12px;">Select Columns Down</button>
+  <button id="fillAverage" style="width:100%; margin-bottom:16px;">Fill Average Formulas</button>
+  <hr>
+  <label for="sheetSelect">Update Scores from Sheet:</label>
+  <select id="sheetSelect" style="width:100%; margin-bottom:8px;">
+    <option value="">Choose Reference Sheet To Pull Scores From</option>
+  </select>
+  <button id="updateScores" style="width:100%; margin-top: 10px; margin-bottom:10px;">Update Scores</button>
+  <hr>
+  <div id="status" style="margin-top:15px; font-weight:bold;"></div>
+</div>
+
+<script>
+  // Populate sheet dropdown on load
+  google.script.run.withSuccessHandler(function(names){
+    const select = document.getElementById('sheetSelect');
+    names.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.text = name;
+      select.appendChild(option);
+    });
+  }).getAllSheetNames();
+
+  // Utility to update status
+  function setStatus(msg) {
+    document.getElementById('status').textContent = msg;
+  }
+
+  // Button handlers
+  document.getElementById('selectColumns').onclick = () => {
+    google.script.run.withSuccessHandler(setStatus).selectColumnsDown();
+  };
+
+  document.getElementById('fillAverage').onclick = () => {
+    google.script.run.withSuccessHandler(setStatus).fillAverageFormulas();
+  };
+
+  document.getElementById('updateScores').onclick = () => {
+    const sheet = document.getElementById('sheetSelect').value;
+    if (!sheet) {
+      setStatus("Please select a sheet first.");
+      return;
+    }
+    google.script.run.withSuccessHandler(setStatus).updateScoresFromSourceSheet(sheet);
+  };
+</script>
