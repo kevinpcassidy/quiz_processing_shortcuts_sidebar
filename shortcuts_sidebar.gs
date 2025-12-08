@@ -44,6 +44,9 @@ function selectColumnsDown() {
   const rangeList = sheet.getRangeList(newRanges.map(r => r.getA1Notation()));
   rangeList.activate();
 
+  // Return focus to the spreadsheet
+  SpreadsheetApp.flush();
+
   return "Selection Ready for Grade Grabber.";
 }
 
