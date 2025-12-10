@@ -1,15 +1,58 @@
-<div style="font-family:Arial, sans-serif; font-size:12pt; padding:10px;">
-  <button id="selectColumns" style="width:100%; margin-bottom:12px;">Select Columns Down</button>
-  <button id="fillAverage" style="width:100%; margin-bottom:16px;">Fill Average Formulas</button>
-  <hr>
-  <label for="sheetSelect">Update Scores from Sheet:</label>
-  <select id="sheetSelect" style="width:100%; margin-bottom:8px;">
-    <option value="">Choose Reference Sheet To Pull Scores From</option>
-  </select>
-  <button id="updateScores" style="width:100%; margin-top: 10px; margin-bottom:10px;">Update Scores</button>
-  <hr>
-  <div id="status" style="margin-top:15px; font-weight:bold;"></div>
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #3498db;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .processing {
+      color: #3498db;
+    }
+    
+    .success {
+      color: #27ae60;
+    }
+    
+    .error {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="font-family:Arial, sans-serif; font-size:12pt; padding:10px;">
+    <button id="selectColumns" style="width:100%; margin-bottom:12px;">Select Columns Down</button>
+    <button id="fillAverage" style="width:100%; margin-bottom:16px;">Fill Average Formulas</button>
+    <hr>
+    <label for="sheetSelect">Update Scores from Sheet:</label>
+    <select id="sheetSelect" style="width:100%; margin-bottom:8px;">
+      <option value="">Choose Reference Sheet To Pull Scores From</option>
+    </select>
+    <button id="updateScores" style="width:100%; margin-top: 10px; margin-bottom:10px;">Update Scores</button>
+    <hr>
+    <div id="status" style="margin-top:15px; font-weight:bold;"></div>
+  </div>
 
 <script>
   // Populate sheet dropdown on load
@@ -23,26 +66,50 @@
     });
   }).getAllSheetNames();
 
-  // Utility to update status
-  function setStatus(msg) {
-    document.getElementById('status').textContent = msg;
+  // Utility to update status with styling
+  function setStatus(msg, type = 'success') {
+    const statusDiv = document.getElementById('status');
+    statusDiv.className = type;
+    if (type === 'processing') {
+      statusDiv.innerHTML = msg + '<span class="spinner"></span>';
+    } else if (type === 'success') {
+      statusDiv.innerHTML = '✓ ' + msg;
+    } else if (type === 'error') {
+      statusDiv.innerHTML = '✗ ' + msg;
+    } else {
+      statusDiv.textContent = msg;
+    }
   }
 
   // Button handlers
   document.getElementById('selectColumns').onclick = () => {
-    google.script.run.withSuccessHandler(setStatus).selectColumnsDown();
+    setStatus('Processing...', 'processing');
+    google.script.run
+      .withSuccessHandler(msg => setStatus(msg, 'success'))
+      .withFailureHandler(err => setStatus(err.message, 'error'))
+      .selectColumnsDown();
   };
 
   document.getElementById('fillAverage').onclick = () => {
-    google.script.run.withSuccessHandler(setStatus).fillAverageFormulas();
+    setStatus('Processing...', 'processing');
+    google.script.run
+      .withSuccessHandler(msg => setStatus(msg, 'success'))
+      .withFailureHandler(err => setStatus(err.message, 'error'))
+      .fillAverageFormulas();
   };
 
   document.getElementById('updateScores').onclick = () => {
     const sheet = document.getElementById('sheetSelect').value;
     if (!sheet) {
-      setStatus("Please select a sheet first.");
+      setStatus("Please select a sheet first.", 'error');
       return;
     }
-    google.script.run.withSuccessHandler(setStatus).updateScoresFromSourceSheet(sheet);
+    setStatus('Updating scores...', 'processing');
+    google.script.run
+      .withSuccessHandler(msg => setStatus(msg, 'success'))
+      .withFailureHandler(err => setStatus(err.message, 'error'))
+      .updateScoresFromSourceSheet(sheet);
   };
 </script>
+</body>
+</html>
