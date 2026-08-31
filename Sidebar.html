@@ -1,115 +1,334 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-  <style>
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #3498db;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      vertical-align: middle;
-      margin-left: 10px;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .processing {
-      color: #3498db;
-    }
-    
-    .success {
-      color: #27ae60;
-    }
-    
-    .error {
-      color: #e74c3c;
-    }
-  </style>
-</head>
+    <base target="_top">
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Arial, sans-serif;
+        color: #202124;
+      }
 
-<body>
-  <div style="font-family:Arial, sans-serif; font-size:12pt; padding:10px;">
-    <button id="selectColumns" style="width:100%; margin-bottom:12px;">Select Columns Down</button>
-    <button id="fillAverage" style="width:100%; margin-bottom:16px;">Fill Average Formulas</button>
-    <hr>
-    <label for="sheetSelect">Update Scores from Sheet:</label>
-    <select id="sheetSelect" style="width:100%; margin-bottom:8px;">
-      <option value="">Choose Reference Sheet To Pull Scores From</option>
-    </select>
-    <button id="updateScores" style="width:100%; margin-top: 10px; margin-bottom:10px;">Update Scores</button>
-    <hr>
-    <div id="status" style="margin-top:15px; font-weight:bold;"></div>
-  </div>
+      body {
+        margin: 0;
+        background: #f8fafd;
+      }
 
-<script>
-  // Populate sheet dropdown on load
-  google.script.run.withSuccessHandler(function(names){
-    const select = document.getElementById('sheetSelect');
-    names.forEach(name => {
-      const option = document.createElement('option');
-      option.value = name;
-      option.text = name;
-      select.appendChild(option);
-    });
-  }).getAllSheetNames();
+      main {
+        padding: 18px;
+      }
 
-  // Utility to update status with styling
-  function setStatus(msg, type = 'success') {
-    const statusDiv = document.getElementById('status');
-    statusDiv.className = type;
-    if (type === 'processing') {
-      statusDiv.innerHTML = msg + '<span class="spinner"></span>';
-    } else if (type === 'success') {
-      statusDiv.innerHTML = '✓ ' + msg;
-    } else if (type === 'error') {
-      statusDiv.innerHTML = '✗ ' + msg;
-    } else {
-      statusDiv.textContent = msg;
-    }
-  }
+      h1 {
+        margin: 0 0 6px;
+        font-size: 20px;
+        line-height: 1.3;
+      }
 
-  // Button handlers
-  document.getElementById('selectColumns').onclick = () => {
-    setStatus('Processing...', 'processing');
-    google.script.run
-      .withSuccessHandler(msg => setStatus(msg, 'success'))
-      .withFailureHandler(err => setStatus(err.message, 'error'))
-      .selectColumnsDown();
-  };
+      .intro,
+      .hint {
+        color: #5f6368;
+        font-size: 13px;
+        line-height: 1.45;
+      }
 
-  document.getElementById('fillAverage').onclick = () => {
-    setStatus('Processing...', 'processing');
-    google.script.run
-      .withSuccessHandler(msg => setStatus(msg, 'success'))
-      .withFailureHandler(err => setStatus(err.message, 'error'))
-      .fillAverageFormulas();
-  };
+      .card {
+        margin-top: 16px;
+        padding: 14px;
+        border: 1px solid #dadce0;
+        border-radius: 10px;
+        background: #fff;
+      }
 
-  document.getElementById('updateScores').onclick = () => {
-    const sheet = document.getElementById('sheetSelect').value;
-    if (!sheet) {
-      setStatus("Please select a sheet first.", 'error');
-      return;
-    }
-    setStatus('Updating scores...', 'processing');
-    google.script.run
-      .withSuccessHandler(msg => setStatus(msg, 'success'))
-      .withFailureHandler(err => setStatus(err.message, 'error'))
-      .updateScoresFromSourceSheet(sheet);
-  };
-</script>
-</body>
+      h2 {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      select,
+      button {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 38px;
+        border-radius: 6px;
+        font-size: 14px;
+      }
+
+      select {
+        padding: 7px 9px;
+        border: 1px solid #bdc1c6;
+        background: #fff;
+      }
+
+      button {
+        margin-top: 10px;
+        padding: 8px 12px;
+        border: 0;
+        color: #fff;
+        background: #1a73e8;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      button.secondary {
+        border: 1px solid #1a73e8;
+        color: #1a73e8;
+        background: #fff;
+      }
+
+      button:disabled,
+      select:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      #status {
+        display: none;
+        margin-top: 16px;
+        padding: 11px;
+        border-radius: 7px;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      #status.processing,
+      #status.success,
+      #status.warning,
+      #status.error {
+        display: block;
+      }
+
+      #status.processing {
+        color: #174ea6;
+        background: #e8f0fe;
+      }
+
+      #status.success {
+        color: #137333;
+        background: #e6f4ea;
+      }
+
+      #status.warning {
+        color: #7c4a03;
+        background: #fef7e0;
+      }
+
+      #status.error {
+        color: #b3261e;
+        background: #fce8e6;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-left: 8px;
+        border: 2px solid #aecbfa;
+        border-top-color: #1a73e8;
+        border-radius: 50%;
+        vertical-align: -2px;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .details,
+      .warnings {
+        margin: 7px 0 0;
+        padding-left: 18px;
+      }
+
+      footer {
+        margin-top: 18px;
+        color: #5f6368;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      footer a {
+        color: #1a73e8;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Google Sheets Sidebar</h1>
+      <div class="intro">Quick roster and gradebook tools for the sheet you have open.</div>
+
+      <section class="card" aria-labelledby="selection-heading">
+        <h2 id="selection-heading">Selection and formulas</h2>
+        <button id="selectColumns" class="secondary" type="button">Extend Two Selections</button>
+        <div class="hint">Select exactly two cells or ranges first. Each selection extends down by up to 50 rows.</div>
+        <button id="fillAverage" class="secondary" type="button">Fill Two-Highest Average</button>
+        <div class="hint">Select the destination column. The formula uses the four columns immediately before it.</div>
+      </section>
+
+      <section class="card" aria-labelledby="update-heading">
+        <h2 id="update-heading">Update from master roster</h2>
+        <label for="sheetSelect">Source sheet</label>
+        <select id="sheetSelect" disabled>
+          <option value="">Loading sheets…</option>
+        </select>
+        <button id="updateScores" type="button" disabled>Update Matching Columns</button>
+        <div class="hint">Headers are matched without regard to capitalization. Repeated names are paired by roster order and reported after the update.</div>
+      </section>
+
+      <div id="status" role="status" aria-live="polite"></div>
+
+      <footer>
+        Free resource by Kevin's Teacher Tech ·
+        <a href="https://www.kevinsteachertech.com/google-sheets-sidebar/privacy">Privacy</a> ·
+        <a href="https://www.kevinsteachertech.com/google-sheets-sidebar/terms">Terms</a> ·
+        <a href="mailto:kpcassidy@gmail.com">Support</a>
+      </footer>
+    </main>
+
+    <script>
+      const controls = Array.from(document.querySelectorAll('button, select'));
+
+      function setBusy(isBusy) {
+        controls.forEach(control => {
+          if (control.id === 'sheetSelect' && !control.dataset.loaded) return;
+          if (control.id === 'updateScores' && !document.getElementById('sheetSelect').value) return;
+          control.disabled = isBusy;
+        });
+      }
+
+      function clearStatus() {
+        const status = document.getElementById('status');
+        status.className = '';
+        status.replaceChildren();
+      }
+
+      function setStatus(message, type, result) {
+        const status = document.getElementById('status');
+        status.className = type;
+        status.replaceChildren();
+
+        const messageNode = document.createElement('div');
+        messageNode.textContent = message;
+        status.appendChild(messageNode);
+
+        if (type === 'processing') {
+          const spinner = document.createElement('span');
+          spinner.className = 'spinner';
+          spinner.setAttribute('aria-hidden', 'true');
+          messageNode.appendChild(spinner);
+        }
+
+        if (result && result.details && result.details.matchedColumns) {
+          const details = document.createElement('ul');
+          details.className = 'details';
+          const rowItem = document.createElement('li');
+          rowItem.textContent = `${result.details.matchedRows} row(s) matched; ${result.details.unmatchedRows} unmatched.`;
+          details.appendChild(rowItem);
+          const columnItem = document.createElement('li');
+          columnItem.textContent = `Columns: ${result.details.matchedColumns.join(', ')}`;
+          details.appendChild(columnItem);
+          status.appendChild(details);
+        }
+
+        if (result && result.warnings && result.warnings.length) {
+          status.className = 'warning';
+          const warnings = document.createElement('ul');
+          warnings.className = 'warnings';
+          result.warnings.forEach(warning => {
+            const item = document.createElement('li');
+            item.textContent = warning;
+            warnings.appendChild(item);
+          });
+          status.appendChild(warnings);
+        }
+      }
+
+      function finishRequest(result) {
+        setBusy(false);
+        if (!result || result.ok === false) {
+          setStatus(result && result.message ? result.message : 'The operation could not be completed.', 'error');
+          return;
+        }
+        setStatus(result.message, 'success', result);
+      }
+
+      function failRequest(error) {
+        setBusy(false);
+        setStatus(error && error.message ? error.message : 'Google Sheets returned an unexpected error.', 'error');
+      }
+
+      function runOperation(message, operation) {
+        setBusy(true);
+        setStatus(message, 'processing');
+        operation();
+      }
+
+      function loadSheets() {
+        google.script.run
+          .withSuccessHandler(names => {
+            const select = document.getElementById('sheetSelect');
+            select.replaceChildren();
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = names.length ? 'Choose a source sheet' : 'No other sheets available';
+            select.appendChild(placeholder);
+            names.forEach(name => {
+              const option = document.createElement('option');
+              option.value = name;
+              option.textContent = name;
+              select.appendChild(option);
+            });
+            select.dataset.loaded = 'true';
+            select.disabled = names.length === 0;
+            clearStatus();
+          })
+          .withFailureHandler(failRequest)
+          .getAvailableSourceSheetNames();
+      }
+
+      document.getElementById('sheetSelect').addEventListener('change', event => {
+        document.getElementById('updateScores').disabled = !event.target.value;
+      });
+
+      document.getElementById('selectColumns').addEventListener('click', () => {
+        runOperation('Extending selections…', () => {
+          google.script.run
+            .withSuccessHandler(finishRequest)
+            .withFailureHandler(failRequest)
+            .selectColumnsDown();
+        });
+      });
+
+      document.getElementById('fillAverage').addEventListener('click', () => {
+        runOperation('Filling formulas…', () => {
+          google.script.run
+            .withSuccessHandler(finishRequest)
+            .withFailureHandler(failRequest)
+            .fillAverageFormulas();
+        });
+      });
+
+      document.getElementById('updateScores').addEventListener('click', () => {
+        const sheetName = document.getElementById('sheetSelect').value;
+        if (!sheetName) {
+          setStatus('Choose a source sheet first.', 'error');
+          return;
+        }
+        runOperation('Updating matching rows and columns…', () => {
+          google.script.run
+            .withSuccessHandler(finishRequest)
+            .withFailureHandler(failRequest)
+            .updateScoresFromSourceSheet(sheetName);
+        });
+      });
+
+      loadSheets();
+    </script>
+  </body>
 </html>
