@@ -1,11 +1,11 @@
-# Privacy Policy for Google Sheets Sidebar
+# Privacy Policy for Spreadsheet Sidekick
 
 **Draft for publication at:**  
-<https://www.kevinsteachertech.com/google-sheets-sidebar/privacy>
+<https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy>
 
 **Effective date:** [INSERT EFFECTIVE DATE]
 
-Google Sheets Sidebar (the “Add-on”) is a free educational resource published by
+Spreadsheet Sidekick (the “Add-on”) is a free educational resource published by
 Kevin Cassidy under the name Kevin's Teacher Tech (“we,” “us,” or “our”). This
 Privacy Policy explains what information the Add-on accesses, how that
 information is used, and the choices available to users.
@@ -28,8 +28,8 @@ access to the user's Google Drive.
 ## How information is used
 
 Spreadsheet information is used only to perform the action initiated by the
-user, such as extending selected ranges, inserting grade formulas, or copying
-matching values from a source sheet to the active sheet.
+user, such as inserting grade formulas, adding or removing roster rows, or
+copying matching values from a source sheet to the active sheet.
 
 Names are compared without regard to capitalization or surrounding whitespace.
 If the same name occurs more than once, those rows are paired by their order in
@@ -39,9 +39,12 @@ user.
 ## Storage, sharing, and external transfer
 
 The current version of the Add-on processes spreadsheet information within
-Google Apps Script. It does not send spreadsheet content to a server operated by
-Kevin's Teacher Tech, does not maintain an external database of spreadsheet
-content, and does not sell or share spreadsheet content for advertising.
+Google Apps Script. Formula templates a user creates are saved in that user's
+Google Apps Script User Properties so they can be reused; these templates may
+contain cell references but should not contain student information. The Add-on
+does not send spreadsheet content to a server operated by Kevin's Teacher Tech,
+does not maintain an external database of spreadsheet content, and does not sell
+or share spreadsheet content for advertising.
 
 Google may process account and spreadsheet information as necessary to provide
 Google Sheets, Google Apps Script, authorization, security, logging, and related
@@ -60,7 +63,8 @@ we receive the information that the user voluntarily includes in that message.
 Because the current version does not maintain a developer-operated database,
 there is ordinarily no separate copy of spreadsheet content for us to delete.
 Updates made by the Add-on are stored in the user's spreadsheet and remain under
-the control of that spreadsheet's owner and editors.
+the control of that spreadsheet's owner and editors. Users can delete their
+saved custom formula templates in the Add-on's formula editor.
 
 Users can revoke the Add-on's access through their Google Account permissions and
 can uninstall it through Google Workspace Marketplace or Google Sheets. Users
@@ -95,7 +99,7 @@ Questions about this Privacy Policy or the Add-on may be sent to:
 
 **Kevin Cassidy / Kevin's Teacher Tech**  
 Email: <kpcassidy@gmail.com>  
-Product page: <https://www.kevinsteachertech.com/google-sheets-sidebar>
+Product page: <https://www.kevinsteachertech.com/spreadsheet-sidekick>
 
 > **Drafting note:** This document is a project-specific draft, not legal advice.
 > Confirm the effective date and review it for the laws and school policies that

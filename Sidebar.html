@@ -3,332 +3,218 @@
   <head>
     <base target="_top">
     <style>
-      :root {
-        color-scheme: light;
-        font-family: Arial, sans-serif;
-        color: #202124;
-      }
-
-      body {
-        margin: 0;
-        background: #f8fafd;
-      }
-
-      main {
-        padding: 18px;
-      }
-
-      h1 {
-        margin: 0 0 6px;
-        font-size: 20px;
-        line-height: 1.3;
-      }
-
-      .intro,
-      .hint {
-        color: #5f6368;
-        font-size: 13px;
-        line-height: 1.45;
-      }
-
-      .card {
-        margin-top: 16px;
-        padding: 14px;
-        border: 1px solid #dadce0;
-        border-radius: 10px;
-        background: #fff;
-      }
-
-      h2 {
-        margin: 0 0 10px;
-        font-size: 15px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 13px;
-        font-weight: 600;
-      }
-
-      select,
-      button {
-        box-sizing: border-box;
-        width: 100%;
-        min-height: 38px;
-        border-radius: 6px;
-        font-size: 14px;
-      }
-
-      select {
-        padding: 7px 9px;
-        border: 1px solid #bdc1c6;
-        background: #fff;
-      }
-
-      button {
-        margin-top: 10px;
-        padding: 8px 12px;
-        border: 0;
-        color: #fff;
-        background: #1a73e8;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      button.secondary {
-        border: 1px solid #1a73e8;
-        color: #1a73e8;
-        background: #fff;
-      }
-
-      button:disabled,
-      select:disabled {
-        cursor: not-allowed;
-        opacity: 0.55;
-      }
-
-      #status {
-        display: none;
-        margin-top: 16px;
-        padding: 11px;
-        border-radius: 7px;
-        font-size: 13px;
-        line-height: 1.4;
-      }
-
-      #status.processing,
-      #status.success,
-      #status.warning,
-      #status.error {
-        display: block;
-      }
-
-      #status.processing {
-        color: #174ea6;
-        background: #e8f0fe;
-      }
-
-      #status.success {
-        color: #137333;
-        background: #e6f4ea;
-      }
-
-      #status.warning {
-        color: #7c4a03;
-        background: #fef7e0;
-      }
-
-      #status.error {
-        color: #b3261e;
-        background: #fce8e6;
-      }
-
-      .spinner {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        margin-left: 8px;
-        border: 2px solid #aecbfa;
-        border-top-color: #1a73e8;
-        border-radius: 50%;
-        vertical-align: -2px;
-        animation: spin 0.8s linear infinite;
-      }
-
-      .details,
-      .warnings {
-        margin: 7px 0 0;
-        padding-left: 18px;
-      }
-
-      footer {
-        margin-top: 18px;
-        color: #5f6368;
-        font-size: 11px;
-        text-align: center;
-      }
-
-      footer a {
-        color: #1a73e8;
-      }
-
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
+      :root { color-scheme: light; font-family: Arial, sans-serif; color: #202124; }
+      body { margin: 0; background: #f8fafd; }
+      main { padding: 18px; }
+      h1 { margin: 0 0 6px; font-size: 21px; line-height: 1.3; }
+      h2 { margin: 0 0 10px; font-size: 15px; }
+      h3 { margin: 16px 0 8px; font-size: 14px; }
+      .intro, .hint { color: #5f6368; font-size: 13px; line-height: 1.45; }
+      .card { margin-top: 16px; padding: 14px; border: 1px solid #dadce0; border-radius: 10px; background: #fff; }
+      label { display: block; margin: 10px 0 6px; font-size: 13px; font-weight: 600; }
+      select, input, textarea, button { box-sizing: border-box; width: 100%; min-height: 38px; border-radius: 6px; font: inherit; font-size: 14px; }
+      select, input, textarea { padding: 7px 9px; border: 1px solid #bdc1c6; background: #fff; }
+      textarea { min-height: 82px; resize: vertical; font-family: monospace; }
+      button { margin-top: 10px; padding: 8px 12px; border: 0; color: #fff; background: #1a73e8; cursor: pointer; font-weight: 600; }
+      button.secondary { border: 1px solid #1a73e8; color: #1a73e8; background: #fff; }
+      button.danger { background: #b3261e; }
+      button.text { width: auto; min-height: 30px; margin: 0; padding: 4px 8px; color: #1a73e8; background: transparent; }
+      button:disabled, select:disabled { cursor: not-allowed; opacity: .55; }
+      .button-row { display: flex; gap: 8px; margin-top: 10px; }
+      .button-row button { flex: 1; margin-top: 0; }
+      #status { display: none; margin-top: 16px; padding: 11px; border-radius: 7px; font-size: 13px; line-height: 1.4; }
+      #status.processing, #status.success, #status.warning, #status.error { display: block; }
+      #status.processing { color: #174ea6; background: #e8f0fe; }
+      #status.success { color: #137333; background: #e6f4ea; }
+      #status.warning { color: #7c4a03; background: #fef7e0; }
+      #status.error { color: #b3261e; background: #fce8e6; }
+      .spinner { display: inline-block; width: 12px; height: 12px; margin-left: 8px; border: 2px solid #aecbfa; border-top-color: #1a73e8; border-radius: 50%; vertical-align: -2px; animation: spin .8s linear infinite; }
+      .details, .warnings { margin: 7px 0 0; padding-left: 18px; }
+      .modal-backdrop { position: fixed; inset: 0; display: none; align-items: flex-start; justify-content: center; padding: 18px; overflow-y: auto; background: rgba(32,33,36,.48); z-index: 2; }
+      .modal-backdrop.open { display: flex; }
+      .modal { box-sizing: border-box; width: 100%; max-width: 360px; padding: 16px; border-radius: 10px; background: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+      .check-list { max-height: 150px; margin: 8px 0; padding: 8px; overflow-y: auto; border: 1px solid #dadce0; border-radius: 6px; }
+      .check-row { display: flex; gap: 8px; align-items: flex-start; margin: 7px 0; font-weight: normal; }
+      .check-row input { width: auto; min-height: auto; margin: 2px 0 0; }
+      .name-list { max-height: 100px; overflow-y: auto; font-size: 13px; }
+      .hidden { display: none !important; }
+      footer { margin-top: 18px; color: #5f6368; font-size: 11px; text-align: center; }
+      footer a { color: #1a73e8; }
+      @keyframes spin { to { transform: rotate(360deg); } }
     </style>
   </head>
   <body>
     <main>
-      <h1>Google Sheets Sidebar</h1>
+      <h1>Spreadsheet Sidekick</h1>
       <div class="intro">Quick roster and gradebook tools for the sheet you have open.</div>
 
-      <section class="card" aria-labelledby="selection-heading">
-        <h2 id="selection-heading">Selection and formulas</h2>
-        <button id="selectColumns" class="secondary" type="button">Extend Two Selections</button>
-        <div class="hint">Select exactly two cells or ranges first. Each selection extends down by up to 50 rows.</div>
-        <button id="fillAverage" class="secondary" type="button">Fill Two-Highest Average</button>
-        <div class="hint">Select the destination column. The formula uses the four columns immediately before it.</div>
+      <section class="card" aria-labelledby="formula-heading">
+        <h2 id="formula-heading">Fill a formula</h2>
+        <label for="formulaSelect">Formula</label>
+        <select id="formulaSelect" disabled><option>Loading formulas…</option></select>
+        <button id="fillFormula" type="button" disabled>Fill Formula</button>
+        <button id="editFormulas" class="secondary" type="button">Edit Formulas</button>
+        <div class="hint">Select a destination column. The formula fills from row 2 through the final name in column A.</div>
       </section>
 
       <section class="card" aria-labelledby="update-heading">
-        <h2 id="update-heading">Update from master roster</h2>
+        <h2 id="update-heading">Update from a master roster</h2>
         <label for="sheetSelect">Source sheet</label>
-        <select id="sheetSelect" disabled>
-          <option value="">Loading sheets…</option>
-        </select>
+        <select id="sheetSelect" disabled><option value="">Loading sheets…</option></select>
         <button id="updateScores" type="button" disabled>Update Matching Columns</button>
-        <div class="hint">Headers are matched without regard to capitalization. Repeated names are paired by roster order and reported after the update.</div>
+        <div class="hint">Matching headers and names ignore capitalization. Missing source students are added in roster order; you choose which destination-only students to delete.</div>
       </section>
 
       <div id="status" role="status" aria-live="polite"></div>
-
       <footer>
-        Free resource by Kevin's Teacher Tech ·
-        <a href="https://www.kevinsteachertech.com/google-sheets-sidebar/privacy">Privacy</a> ·
-        <a href="https://www.kevinsteachertech.com/google-sheets-sidebar/terms">Terms</a> ·
+        <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick">Spreadsheet Sidekick</a> by Kevin's Teacher Tech ·
+        <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy">Privacy</a> ·
+        <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick/terms-of-service">Terms</a> ·
         <a href="mailto:kpcassidy@gmail.com">Support</a>
       </footer>
     </main>
 
+    <div id="updateModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle">
+      <div class="modal">
+        <h2 id="updateModalTitle">Review roster changes</h2>
+        <div id="incomingSection" class="hidden">
+          <p id="incomingWarning" class="hint"></p>
+          <ul id="incomingNames" class="name-list"></ul>
+        </div>
+        <div id="departureSection" class="hidden">
+          <p class="hint">These students are in the destination but not the source. They may have left, been renamed, or been omitted. Checked students will have their entire destination row deleted.</p>
+          <label class="check-row"><input id="selectAllDepartures" type="checkbox"> Select all students for deletion</label>
+          <div id="departureNames" class="check-list"></div>
+        </div>
+        <div class="button-row">
+          <button id="cancelUpdate" class="secondary" type="button">Cancel</button>
+          <button id="confirmUpdate" type="button">Proceed</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="formulaModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="formulaModalTitle">
+      <div class="modal">
+        <h2 id="formulaModalTitle">Edit formulas</h2>
+        <div class="hint">Write formulas for row 2. The example destination tells Sidekick how to shift relative references. Include blank-score handling in the formula itself.</div>
+        <label for="editFormulaSelect">Saved formula</label>
+        <select id="editFormulaSelect"></select>
+        <label for="formulaName">Formula name</label>
+        <input id="formulaName" type="text" maxlength="80">
+        <label for="formulaText">Google Sheets formula</label>
+        <textarea id="formulaText" spellcheck="false" placeholder="=MAX(B2:C2)"></textarea>
+        <label for="formulaDestination">Example destination cell</label>
+        <input id="formulaDestination" type="text" placeholder="D2">
+        <div class="hint">AI prompt example: “Write a Google Sheets formula for row 2 that averages the two highest scores in the preceding four cells and stays blank if all four are blank.” Always review AI-generated formulas before using them for grades.</div>
+        <div class="button-row">
+          <button id="newFormula" class="secondary" type="button">New</button>
+          <button id="deleteFormula" class="danger" type="button">Delete</button>
+          <button id="saveFormula" type="button">Save</button>
+        </div>
+        <button id="closeFormulaModal" class="secondary" type="button">Close</button>
+      </div>
+    </div>
+
+    <div id="replaceModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="replaceTitle">
+      <div class="modal">
+        <h2 id="replaceTitle">Replace existing content?</h2>
+        <p id="replaceMessage" class="hint"></p>
+        <div class="button-row">
+          <button id="cancelReplace" class="secondary" type="button">Cancel</button>
+          <button id="confirmReplace" type="button">Replace and Fill</button>
+        </div>
+      </div>
+    </div>
+
     <script>
-      const controls = Array.from(document.querySelectorAll('button, select'));
+      let formulaLibrary = [];
+      let pendingUpdate = null;
+      let pendingFormulaId = '';
+      const byId = id => document.getElementById(id);
+      const mainControls = Array.from(document.querySelectorAll('main button, main select'));
 
       function setBusy(isBusy) {
-        controls.forEach(control => {
-          if (control.id === 'sheetSelect' && !control.dataset.loaded) return;
-          if (control.id === 'updateScores' && !document.getElementById('sheetSelect').value) return;
-          control.disabled = isBusy;
-        });
+        mainControls.forEach(control => { control.disabled = isBusy; });
+        if (!isBusy) {
+          byId('sheetSelect').disabled = !byId('sheetSelect').dataset.loaded;
+          byId('updateScores').disabled = !byId('sheetSelect').value;
+          byId('formulaSelect').disabled = formulaLibrary.length === 0;
+          byId('fillFormula').disabled = !byId('formulaSelect').value;
+        }
       }
-
-      function clearStatus() {
-        const status = document.getElementById('status');
-        status.className = '';
-        status.replaceChildren();
-      }
-
+      function clearStatus() { byId('status').className = ''; byId('status').replaceChildren(); }
       function setStatus(message, type, result) {
-        const status = document.getElementById('status');
-        status.className = type;
-        status.replaceChildren();
-
-        const messageNode = document.createElement('div');
-        messageNode.textContent = message;
-        status.appendChild(messageNode);
-
-        if (type === 'processing') {
-          const spinner = document.createElement('span');
-          spinner.className = 'spinner';
-          spinner.setAttribute('aria-hidden', 'true');
-          messageNode.appendChild(spinner);
-        }
-
+        const status = byId('status');
+        status.className = type; status.replaceChildren();
+        const text = document.createElement('div'); text.textContent = message; status.appendChild(text);
+        if (type === 'processing') { const spinner = document.createElement('span'); spinner.className = 'spinner'; spinner.setAttribute('aria-hidden', 'true'); text.appendChild(spinner); }
         if (result && result.details && result.details.matchedColumns) {
-          const details = document.createElement('ul');
-          details.className = 'details';
-          const rowItem = document.createElement('li');
-          rowItem.textContent = `${result.details.matchedRows} row(s) matched; ${result.details.unmatchedRows} unmatched.`;
-          details.appendChild(rowItem);
-          const columnItem = document.createElement('li');
-          columnItem.textContent = `Columns: ${result.details.matchedColumns.join(', ')}`;
-          details.appendChild(columnItem);
-          status.appendChild(details);
+          const list = document.createElement('ul'); list.className = 'details';
+          [`${result.details.matchedRows} matched; ${result.details.addedRows} added; ${result.details.deletedRows} deleted.`, `Columns: ${result.details.matchedColumns.join(', ')}`].forEach(value => { const item = document.createElement('li'); item.textContent = value; list.appendChild(item); });
+          status.appendChild(list);
         }
-
         if (result && result.warnings && result.warnings.length) {
-          status.className = 'warning';
-          const warnings = document.createElement('ul');
-          warnings.className = 'warnings';
-          result.warnings.forEach(warning => {
-            const item = document.createElement('li');
-            item.textContent = warning;
-            warnings.appendChild(item);
-          });
-          status.appendChild(warnings);
+          status.className = 'warning'; const list = document.createElement('ul'); list.className = 'warnings';
+          result.warnings.forEach(value => { const item = document.createElement('li'); item.textContent = value; list.appendChild(item); }); status.appendChild(list);
         }
       }
+      function finishRequest(result) { setBusy(false); if (!result || !result.ok) { setStatus(result && result.message || 'The operation could not be completed.', 'error'); return; } setStatus(result.message, 'success', result); }
+      function failRequest(error) { setBusy(false); setStatus(error && error.message || 'Google Sheets returned an unexpected error.', 'error'); }
+      function runOperation(message, operation) { setBusy(true); setStatus(message, 'processing'); operation(); }
+      function openModal(id) { byId(id).classList.add('open'); }
+      function closeModal(id) { byId(id).classList.remove('open'); }
 
-      function finishRequest(result) {
+      function renderFormulaLibrary(selectedId) {
+        ['formulaSelect', 'editFormulaSelect'].forEach(id => {
+          const select = byId(id); select.replaceChildren();
+          if (id === 'editFormulaSelect') { const fresh = document.createElement('option'); fresh.value = ''; fresh.textContent = 'Create a new formula'; select.appendChild(fresh); }
+          formulaLibrary.forEach(item => { const option = document.createElement('option'); option.value = item.id; option.textContent = item.builtIn ? `${item.name} (built in)` : item.name; select.appendChild(option); });
+          if (selectedId) select.value = selectedId;
+        });
         setBusy(false);
-        if (!result || result.ok === false) {
-          setStatus(result && result.message ? result.message : 'The operation could not be completed.', 'error');
-          return;
-        }
-        setStatus(result.message, 'success', result);
       }
-
-      function failRequest(error) {
-        setBusy(false);
-        setStatus(error && error.message ? error.message : 'Google Sheets returned an unexpected error.', 'error');
+      function loadInitialData() {
+        google.script.run.withSuccessHandler(names => {
+          const select = byId('sheetSelect'); select.replaceChildren(); const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = names.length ? 'Choose a source sheet' : 'No other sheets available'; select.appendChild(placeholder);
+          names.forEach(name => { const option = document.createElement('option'); option.value = name; option.textContent = name; select.appendChild(option); }); select.dataset.loaded = names.length ? 'true' : ''; setBusy(false); clearStatus();
+        }).withFailureHandler(failRequest).getAvailableSourceSheetNames();
+        google.script.run.withSuccessHandler(items => { formulaLibrary = items; renderFormulaLibrary(items[0] && items[0].id); }).withFailureHandler(failRequest).getFormulaLibrary();
       }
+      byId('sheetSelect').addEventListener('change', event => { byId('updateScores').disabled = !event.target.value; });
+      byId('formulaSelect').addEventListener('change', event => { byId('fillFormula').disabled = !event.target.value; });
 
-      function runOperation(message, operation) {
-        setBusy(true);
-        setStatus(message, 'processing');
-        operation();
-      }
-
-      function loadSheets() {
-        google.script.run
-          .withSuccessHandler(names => {
-            const select = document.getElementById('sheetSelect');
-            select.replaceChildren();
-            const placeholder = document.createElement('option');
-            placeholder.value = '';
-            placeholder.textContent = names.length ? 'Choose a source sheet' : 'No other sheets available';
-            select.appendChild(placeholder);
-            names.forEach(name => {
-              const option = document.createElement('option');
-              option.value = name;
-              option.textContent = name;
-              select.appendChild(option);
-            });
-            select.dataset.loaded = 'true';
-            select.disabled = names.length === 0;
-            clearStatus();
-          })
-          .withFailureHandler(failRequest)
-          .getAvailableSourceSheetNames();
-      }
-
-      document.getElementById('sheetSelect').addEventListener('change', event => {
-        document.getElementById('updateScores').disabled = !event.target.value;
+      byId('updateScores').addEventListener('click', () => {
+        const sheetName = byId('sheetSelect').value;
+        runOperation('Comparing source and destination rosters…', () => google.script.run.withSuccessHandler(result => {
+          setBusy(false); if (!result.ok) { finishRequest(result); return; } pendingUpdate = result.details;
+          const needsReview = result.details.requiresIncomingConfirmation || result.details.departures.length;
+          if (!needsReview) { executeUpdate([]); return; }
+          byId('incomingSection').classList.toggle('hidden', !result.details.requiresIncomingConfirmation);
+          byId('incomingWarning').textContent = `Warning — ${result.details.incoming.length} names from “${result.details.sourceSheet}” do not match “${result.details.destinationSheet}.” Proceeding will add all of these student rows.`;
+          byId('incomingNames').replaceChildren(...result.details.incoming.map(entry => { const item = document.createElement('li'); item.textContent = entry.name; return item; }));
+          byId('departureSection').classList.toggle('hidden', !result.details.departures.length); byId('selectAllDepartures').checked = false; byId('departureNames').replaceChildren();
+          result.details.departures.forEach(entry => { const label = document.createElement('label'); label.className = 'check-row'; const check = document.createElement('input'); check.type = 'checkbox'; check.dataset.row = entry.row; check.dataset.name = entry.name; label.append(check, document.createTextNode(entry.name)); byId('departureNames').appendChild(label); }); openModal('updateModal'); clearStatus();
+        }).withFailureHandler(failRequest).previewSourceSheetUpdate(sheetName));
       });
+      byId('selectAllDepartures').addEventListener('change', event => { byId('departureNames').querySelectorAll('input').forEach(input => { input.checked = event.target.checked; }); });
+      byId('cancelUpdate').addEventListener('click', () => { closeModal('updateModal'); pendingUpdate = null; });
+      byId('confirmUpdate').addEventListener('click', () => { const deletions = Array.from(byId('departureNames').querySelectorAll('input:checked')).map(input => ({ row: Number(input.dataset.row), name: input.dataset.name })); closeModal('updateModal'); executeUpdate(deletions); });
+      function executeUpdate(deletions) { const sheetName = pendingUpdate ? pendingUpdate.sourceSheet : byId('sheetSelect').value; pendingUpdate = null; runOperation('Updating matching rows and columns…', () => google.script.run.withSuccessHandler(finishRequest).withFailureHandler(failRequest).updateScoresFromSourceSheet(sheetName, deletions)); }
 
-      document.getElementById('selectColumns').addEventListener('click', () => {
-        runOperation('Extending selections…', () => {
-          google.script.run
-            .withSuccessHandler(finishRequest)
-            .withFailureHandler(failRequest)
-            .selectColumnsDown();
-        });
-      });
+      byId('fillFormula').addEventListener('click', () => { pendingFormulaId = byId('formulaSelect').value; runOperation('Checking the destination column…', () => google.script.run.withSuccessHandler(result => { setBusy(false); if (!result.ok) { finishRequest(result); return; } if (result.details.occupiedCells) { byId('replaceMessage').textContent = `This will replace existing content in ${result.details.occupiedCells} cell(s) in column ${result.details.column}. Continue?`; openModal('replaceModal'); clearStatus(); } else { executeFormulaFill(false); } }).withFailureHandler(failRequest).previewFormulaFill(pendingFormulaId)); });
+      byId('cancelReplace').addEventListener('click', () => closeModal('replaceModal'));
+      byId('confirmReplace').addEventListener('click', () => { closeModal('replaceModal'); executeFormulaFill(true); });
+      function executeFormulaFill(replace) { runOperation('Filling formulas…', () => google.script.run.withSuccessHandler(finishRequest).withFailureHandler(failRequest).fillSavedFormula(pendingFormulaId, replace)); }
 
-      document.getElementById('fillAverage').addEventListener('click', () => {
-        runOperation('Filling formulas…', () => {
-          google.script.run
-            .withSuccessHandler(finishRequest)
-            .withFailureHandler(failRequest)
-            .fillAverageFormulas();
-        });
-      });
+      function populateEditor(id) { const item = formulaLibrary.find(entry => entry.id === id); byId('formulaName').value = item ? item.name : ''; byId('formulaText').value = item ? item.formula : ''; byId('formulaDestination').value = item ? item.exampleDestination : ''; const locked = !item || !item.builtIn ? false : true; byId('formulaName').disabled = locked; byId('formulaText').disabled = locked; byId('formulaDestination').disabled = locked; byId('saveFormula').disabled = locked; byId('deleteFormula').disabled = !item || item.builtIn; }
+      byId('editFormulas').addEventListener('click', () => { byId('editFormulaSelect').value = byId('formulaSelect').value; populateEditor(byId('editFormulaSelect').value); openModal('formulaModal'); });
+      byId('editFormulaSelect').addEventListener('change', event => populateEditor(event.target.value));
+      byId('newFormula').addEventListener('click', () => { byId('editFormulaSelect').value = ''; populateEditor(''); byId('formulaName').focus(); });
+      byId('closeFormulaModal').addEventListener('click', () => closeModal('formulaModal'));
+      byId('saveFormula').addEventListener('click', () => { const current = formulaLibrary.find(item => item.id === byId('editFormulaSelect').value); const item = { id: current && !current.builtIn ? current.id : '', name: byId('formulaName').value, formula: byId('formulaText').value, exampleDestination: byId('formulaDestination').value }; google.script.run.withSuccessHandler(result => { if (!result.ok) { setStatus(result.message, 'error'); return; } formulaLibrary = result.details.formulas; renderFormulaLibrary(result.details.selectedId); byId('editFormulaSelect').value = result.details.selectedId; populateEditor(result.details.selectedId); setStatus(result.message, 'success'); }).withFailureHandler(failRequest).saveCustomFormula(item); });
+      byId('deleteFormula').addEventListener('click', () => { const id = byId('editFormulaSelect').value; google.script.run.withSuccessHandler(result => { if (!result.ok) { setStatus(result.message, 'error'); return; } formulaLibrary = result.details.formulas; renderFormulaLibrary(formulaLibrary[0] && formulaLibrary[0].id); byId('editFormulaSelect').value = ''; populateEditor(''); setStatus(result.message, 'success'); }).withFailureHandler(failRequest).deleteCustomFormula(id); });
 
-      document.getElementById('updateScores').addEventListener('click', () => {
-        const sheetName = document.getElementById('sheetSelect').value;
-        if (!sheetName) {
-          setStatus('Choose a source sheet first.', 'error');
-          return;
-        }
-        runOperation('Updating matching rows and columns…', () => {
-          google.script.run
-            .withSuccessHandler(finishRequest)
-            .withFailureHandler(failRequest)
-            .updateScoresFromSourceSheet(sheetName);
-        });
-      });
-
-      loadSheets();
+      loadInitialData();
     </script>
   </body>
 </html>

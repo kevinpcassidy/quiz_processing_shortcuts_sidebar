@@ -9,7 +9,7 @@ const source = fs.readFileSync('shortcuts_sidebar.gs', 'utf8');
 const context = { console };
 vm.createContext(context);
 vm.runInContext(
-  `${source}\nthis.testApi = { normalizeMatchValue, buildRowMatches, buildHeaderLookup };`,
+  `${source}\nthis.testApi = { normalizeMatchValue, buildRowMatches, buildHeaderLookup, buildRosterDiff, shiftFormulaA1 };`,
   context,
 );
 const api = context.testApi;
@@ -66,4 +66,27 @@ test('uses the first duplicate source header and reports the duplicate', () => {
 
   assert.equal(result.lookup.get('quiz 1'), 1);
   assert.deepEqual(Array.from(result.duplicates), ['quiz 1']);
+});
+
+test('identifies incoming and departing roster occurrences', () => {
+  const result = api.buildRosterDiff(
+    [['Alex'], ['Sam'], ['Sam'], ['New Student']],
+    [['Alex'], ['Sam'], ['Former Student']],
+  );
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
+    incoming: [{ sourceIndex: 2, name: 'Sam' }, { sourceIndex: 3, name: 'New Student' }],
+    departures: [{ row: 4, name: 'Former Student' }],
+  });
+});
+
+test('shifts relative formula references from the example destination', () => {
+  assert.equal(api.shiftFormulaA1('=MAX(B2:C2)', 'D2', 2, 7), '=MAX(E2:F2)');
+  assert.equal(api.shiftFormulaA1('=MAX(B2:C2)', 'D2', 5, 7), '=MAX(E5:F5)');
+});
+
+test('preserves absolute references, sheet names, and quoted strings', () => {
+  assert.equal(
+    api.shiftFormulaA1('=IF(B2="A2",\'Scores 1\'!$C2+$A$1)', 'D2', 4, 6),
+    '=IF(D4="A2",\'Scores 1\'!$C4+$A$1)',
+  );
 });
