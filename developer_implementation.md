@@ -6,12 +6,12 @@ Sheets Editor add-on, and submit it to Google Workspace Marketplace.
 
 > **Product identity**
 >
-> - App: **Google Sheets Sidebar**
+> - App: **Spreadsheet Sidekick**
 > - Publisher: **Kevin Cassidy / Kevin's Teacher Tech**
 > - Support: **kpcassidy@gmail.com**
-> - Product: <https://www.kevinsteachertech.com/google-sheets-sidebar>
-> - Privacy: <https://www.kevinsteachertech.com/google-sheets-sidebar/privacy>
-> - Terms: <https://www.kevinsteachertech.com/google-sheets-sidebar/terms>
+> - Product: <https://www.kevinsteachertech.com/spreadsheet-sidekick>
+> - Privacy: <https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy>
+> - Terms: <https://www.kevinsteachertech.com/spreadsheet-sidekick/terms-of-service>
 > - Price: **Free**
 
 Google changes console labels and review requirements periodically. Confirm each
@@ -73,7 +73,7 @@ Recommended, explicit method:
 
 1. Open <https://script.google.com/home> with the publisher account.
 2. Select **New project**.
-3. Rename it **Google Sheets Sidebar**.
+3. Rename it **Spreadsheet Sidekick**.
 4. Open **Project Settings** and copy the **Script ID**.
 5. Copy `.clasp.json.example` to `.clasp.json`.
 6. Replace the placeholder with the Script ID.
@@ -108,10 +108,10 @@ changed if it is unavailable:
 
 ```bash
 gcloud auth login
-gcloud projects create kevins-google-sheets-sidebar \
-  --name="Google Sheets Sidebar"
-gcloud config set project kevins-google-sheets-sidebar
-gcloud projects describe kevins-google-sheets-sidebar \
+gcloud projects create kevins-spreadsheet-sidekick \
+  --name="Spreadsheet Sidekick"
+gcloud config set project kevins-spreadsheet-sidekick
+gcloud projects describe kevins-spreadsheet-sidekick \
   --format='value(projectNumber)'
 ```
 
@@ -154,12 +154,12 @@ Configure:
 
 ### Branding
 
-- App name: **Google Sheets Sidebar**
+- App name: **Spreadsheet Sidekick**
 - User support email: **kpcassidy@gmail.com**
 - Publisher/developer: **Kevin Cassidy / Kevin's Teacher Tech**
-- Home page: <https://www.kevinsteachertech.com/google-sheets-sidebar>
-- Privacy policy: <https://www.kevinsteachertech.com/google-sheets-sidebar/privacy>
-- Terms: <https://www.kevinsteachertech.com/google-sheets-sidebar/terms>
+- Home page: <https://www.kevinsteachertech.com/spreadsheet-sidekick>
+- Privacy policy: <https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy>
+- Terms: <https://www.kevinsteachertech.com/spreadsheet-sidekick/terms-of-service>
 - Authorized domain: **kevinsteachertech.com**
 - Developer contact: **kpcassidy@gmail.com**
 - Logo: upload the final non-Google-branded square product logo
@@ -188,10 +188,10 @@ unless future functionality genuinely opens files outside the active spreadsheet
 
 Suggested scope justification:
 
-> Google Sheets Sidebar uses current-spreadsheet access to read column headers,
-> roster rows, grades, formulas, selected ranges, and sheet names in the Google
+> Spreadsheet Sidekick uses current-spreadsheet access to read column headers,
+> roster rows, grades, formulas, the active cell, and sheet names in the Google
 > spreadsheet where the user opens the add-on. It writes only user-requested
-> formulas, selections, and values back to that spreadsheet. Container UI access
+> formulas, roster rows, and values back to that spreadsheet. Container UI access
 > is used to display the add-on menu and sidebar. The app does not request access
 > to unrelated Drive files or send spreadsheet contents to a developer server.
 
@@ -288,20 +288,19 @@ Suggested listing copy:
 
 ### Short description
 
-> Free Google Sheets tools for roster updates, quick selections, and two-highest
-> grade averages.
+> Free Google Sheets tools for safer roster updates and reusable grade formulas.
 
 ### Full description
 
-> Google Sheets Sidebar adds practical roster and gradebook tools directly to
-> Google Sheets. Extend two selected columns, fill formulas that average the two
-> highest of four scores, and update matching columns from a master roster tab.
+> Spreadsheet Sidekick adds practical roster and gradebook tools directly to
+> Google Sheets. Fill reusable formulas, keep formulas aligned when rosters change,
+> and update matching columns from a master roster tab.
 > Headers and names are matched without regard to capitalization. Repeated names
 > are paired by roster order and clearly reported so you can verify the result.
 >
 > The add-on operates only in the spreadsheet where you open it. It does not
 > request broad Google Drive access or send spreadsheet content to a server
-> operated by Kevin's Teacher Tech. Google Sheets Sidebar is free.
+> operated by Kevin's Teacher Tech. Spreadsheet Sidekick is free.
 
 Suggested categories include **Education** and **Productivity**, subject to the
 categories currently offered by Marketplace.
