@@ -9,7 +9,7 @@ const source = fs.readFileSync('shortcuts_sidebar.gs', 'utf8');
 const context = { console };
 vm.createContext(context);
 vm.runInContext(
-  `${source}\nthis.testApi = { normalizeMatchValue, buildRowMatches, buildHeaderLookup, buildRosterDiff, buildSourceSheetInfo, shiftFormulaA1 };`,
+  `${source}\nthis.testApi = { normalizeMatchValue, buildRowMatches, buildHeaderLookup, buildRosterDiff, buildInsertionGroups, buildSourceSheetInfo, shiftFormulaA1 };`,
   context,
 );
 const api = context.testApi;
@@ -90,6 +90,27 @@ test('builds a fresh source list that excludes only the current destination', ()
       names: ['Period 1 Master', 'Period 2 Master'],
     },
   );
+});
+
+test('groups consecutive missing students into one insertion', () => {
+  const groups = api.buildInsertionGroups(
+    [['Alex'], ['New One'], ['New Two'], ['Jordan'], ['New Three']],
+    [['Alex'], ['Jordan']],
+  );
+  assert.deepEqual(JSON.parse(JSON.stringify(groups)), [
+    { targetIndex: 1, sourceIndexes: [1, 2] },
+    { targetIndex: 4, sourceIndexes: [4] },
+  ]);
+});
+
+test('plans duplicate-name insertions by occurrence order', () => {
+  const groups = api.buildInsertionGroups(
+    [['Sam'], ['Sam'], ['Taylor']],
+    [['Sam'], ['Taylor']],
+  );
+  assert.deepEqual(JSON.parse(JSON.stringify(groups)), [
+    { targetIndex: 1, sourceIndexes: [1] },
+  ]);
 });
 
 test('shifts relative formula references from the example destination', () => {

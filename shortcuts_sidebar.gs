@@ -167,59 +167,104 @@ function previewSourceSheetUpdate(sheetName) {
   });
 }
 
-function copyNeighborFormulas(sheet, row, sourceHeaders) {
-  const lastColumn = sheet.getLastColumn();
-  if (lastColumn < 1) return;
-  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-  const sourceLookup = buildHeaderLookup(sourceHeaders).lookup;
-  const neighborRows = [row - 1, row + 1].filter(candidate => candidate >= 2 && candidate <= sheet.getLastRow());
-  headers.forEach((header, index) => {
-    if (sourceLookup.has(normalizeMatchValue(header))) return;
-    const target = sheet.getRange(row, index + 1);
-    for (const neighborRow of neighborRows) {
-      const neighbor = sheet.getRange(neighborRow, index + 1);
-      if (neighbor.getFormula()) {
-        neighbor.copyTo(target, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false);
+/** Plan insertions in their eventual destination order without rereading a sheet. */
+function buildInsertionGroups(sourceRows, targetRows) {
+  const sourceTokens = occurrenceTokens(sourceRows);
+  const workingTargetTokens = occurrenceTokens(targetRows);
+  const insertions = [];
+
+  sourceTokens.forEach((token, sourceIndex) => {
+    if (!token || workingTargetTokens.includes(token)) return;
+    let targetIndex = workingTargetTokens.length;
+    for (let next = sourceIndex + 1; next < sourceTokens.length; next++) {
+      const nextTargetIndex = workingTargetTokens.indexOf(sourceTokens[next]);
+      if (nextTargetIndex !== -1) {
+        targetIndex = nextTargetIndex;
         break;
       }
     }
+    insertions.push({ sourceIndex, targetIndex });
+    workingTargetTokens.splice(targetIndex, 0, token);
   });
+
+  return insertions.reduce((groups, insertion) => {
+    const previous = groups[groups.length - 1];
+    if (previous &&
+        insertion.sourceIndex === previous.sourceIndexes[previous.sourceIndexes.length - 1] + 1 &&
+        insertion.targetIndex === previous.targetIndex + previous.sourceIndexes.length) {
+      previous.sourceIndexes.push(insertion.sourceIndex);
+    } else {
+      groups.push({
+        targetIndex: insertion.targetIndex,
+        sourceIndexes: [insertion.sourceIndex],
+      });
+    }
+    return groups;
+  }, []);
+}
+
+function getNeighborFormulaTemplates(sheet, insertionRow, rowCount, lastColumn) {
+  const formulasAbove = insertionRow > 2
+    ? sheet.getRange(insertionRow - 1, 1, 1, lastColumn).getFormulas()[0]
+    : new Array(lastColumn).fill('');
+  const rowBelow = insertionRow + rowCount;
+  const formulasBelow = rowBelow <= sheet.getLastRow()
+    ? sheet.getRange(rowBelow, 1, 1, lastColumn).getFormulas()[0]
+    : new Array(lastColumn).fill('');
+  return formulasAbove.map((formula, index) => ({
+    formula: formula || formulasBelow[index],
+    templateRow: formula ? insertionRow - 1 : rowBelow,
+  }));
 }
 
 function insertMissingSourceRows(sourceSheet, targetSheet) {
   const sourceLastColumn = sourceSheet.getLastColumn();
   const sourceHeaders = sourceSheet.getRange(1, 1, 1, sourceLastColumn).getValues()[0];
   const sourceRows = readRows(sourceSheet);
-  const sourceTokens = occurrenceTokens(sourceRows);
+  const targetRows = readRows(targetSheet);
+  const groups = buildInsertionGroups(sourceRows, targetRows);
+  const lastColumn = targetSheet.getLastColumn();
+  const targetHeaders = targetSheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  const sourceLookup = buildHeaderLookup(sourceHeaders).lookup;
 
-  for (let sourceIndex = 0; sourceIndex < sourceRows.length; sourceIndex++) {
-    let targetRows = readRows(targetSheet);
-    let targetTokens = occurrenceTokens(targetRows);
-    if (targetTokens.includes(sourceTokens[sourceIndex])) continue;
-
-    let insertionRow = targetSheet.getLastRow() + 1;
-    for (let next = sourceIndex + 1; next < sourceTokens.length; next++) {
-      const targetIndex = targetTokens.indexOf(sourceTokens[next]);
-      if (targetIndex !== -1) {
-        insertionRow = targetIndex + 2;
-        break;
+  groups.forEach(group => {
+    const insertionRow = group.targetIndex + 2;
+    const rowCount = group.sourceIndexes.length;
+    const lastDataRow = targetSheet.getLastRow();
+    if (insertionRow <= lastDataRow) {
+      targetSheet.insertRowsBefore(insertionRow, rowCount);
+    } else {
+      const requiredLastRow = insertionRow + rowCount - 1;
+      if (requiredLastRow > targetSheet.getMaxRows()) {
+        targetSheet.insertRowsAfter(
+          targetSheet.getMaxRows(),
+          requiredLastRow - targetSheet.getMaxRows(),
+        );
       }
     }
 
-    if (insertionRow <= targetSheet.getLastRow()) {
-      targetSheet.insertRowBefore(insertionRow);
-    } else if (insertionRow > targetSheet.getMaxRows()) {
-      targetSheet.insertRowAfter(targetSheet.getMaxRows());
-    }
-    copyNeighborFormulas(targetSheet, insertionRow, sourceHeaders);
-    const targetHeaders = targetSheet.getRange(1, 1, 1, targetSheet.getLastColumn()).getValues()[0];
-    const sourceLookup = buildHeaderLookup(sourceHeaders).lookup;
-    targetHeaders.forEach((header, targetIndex) => {
-      const sourceColumn = sourceLookup.get(normalizeMatchValue(header));
-      if (sourceColumn === undefined) return;
-      targetSheet.getRange(insertionRow, targetIndex + 1).setValue(sourceRows[sourceIndex][sourceColumn]);
-    });
-  }
+    const formulaTemplates = getNeighborFormulaTemplates(
+      targetSheet,
+      insertionRow,
+      rowCount,
+      lastColumn,
+    );
+    const values = group.sourceIndexes.map((sourceIndex, offset) =>
+      targetHeaders.map((header, targetColumn) => {
+        const sourceColumn = sourceLookup.get(normalizeMatchValue(header));
+        if (sourceColumn !== undefined) return sourceRows[sourceIndex][sourceColumn];
+        const template = formulaTemplates[targetColumn];
+        if (!template.formula) return '';
+        return shiftFormulaA1(
+          template.formula,
+          `${columnLetters(targetColumn + 1)}${template.templateRow}`,
+          insertionRow + offset,
+          targetColumn + 1,
+        );
+      }),
+    );
+    targetSheet.getRange(insertionRow, 1, rowCount, lastColumn).setValues(values);
+  });
 }
 
 function updateScoresFromSourceSheet(sheetName, departureRows) {
