@@ -287,12 +287,19 @@ function updateScoresFromSourceSheet(sheetName, departureRows) {
   }, warnings);
 }
 
-function getAvailableSourceSheetNames() {
+function buildSourceSheetInfo(sheetNames, activeSheetName) {
+  return {
+    activeSheetName,
+    names: sheetNames.filter(name => name !== activeSheetName),
+  };
+}
+
+function getAvailableSourceSheetInfo() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const activeSheetId = ss.getActiveSheet().getSheetId();
-  return ss.getSheets()
-    .filter(sheet => sheet.getSheetId() !== activeSheetId)
-    .map(sheet => sheet.getName());
+  return buildSourceSheetInfo(
+    ss.getSheets().map(sheet => sheet.getName()),
+    ss.getActiveSheet().getName(),
+  );
 }
 
 function parseCellAddress(address) {

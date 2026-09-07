@@ -61,13 +61,15 @@
         <h2 id="update-heading">Update from a master roster</h2>
         <label for="sheetSelect">Source sheet</label>
         <select id="sheetSelect" disabled><option value="">Loading sheets…</option></select>
+        <button id="refreshSheets" class="text" type="button">Refresh Sheet List</button>
         <button id="updateScores" type="button" disabled>Update Matching Columns</button>
         <div class="hint">Matching headers and names ignore capitalization. Missing source students are added in roster order; you choose which destination-only students to delete.</div>
       </section>
 
       <div id="status" role="status" aria-live="polite"></div>
       <footer>
-        <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick">Spreadsheet Sidekick</a> by Kevin's Teacher Tech ·
+        <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick">Spreadsheet Sidekick</a> by Kevin's Teacher Tech<br>
+        Like this free app? <a href="https://venmo.com/u/KevinPCassidy1981">Buy Kevin a coffee!</a><br>
         <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy">Privacy</a> ·
         <a href="https://www.kevinsteachertech.com/spreadsheet-sidekick/terms-of-service">Terms</a> ·
         <a href="mailto:kpcassidy@gmail.com">Support</a>
@@ -130,6 +132,7 @@
       let formulaLibrary = [];
       let pendingUpdate = null;
       let pendingFormulaId = '';
+      let sheetRefreshInFlight = false;
       const byId = id => document.getElementById(id);
       const mainControls = Array.from(document.querySelectorAll('main button, main select'));
 
@@ -173,14 +176,44 @@
         });
         setBusy(false);
       }
+      function refreshSheetList(showStatus) {
+        if (sheetRefreshInFlight) return;
+        sheetRefreshInFlight = true;
+        const select = byId('sheetSelect');
+        const previousSelection = select.value;
+        byId('refreshSheets').disabled = true;
+        if (showStatus) setStatus('Refreshing the sheet list…', 'processing');
+        google.script.run.withSuccessHandler(info => {
+          select.replaceChildren();
+          const placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.textContent = info.names.length ? 'Choose a source sheet' : 'No other sheets available';
+          select.appendChild(placeholder);
+          info.names.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+          });
+          select.dataset.loaded = info.names.length ? 'true' : '';
+          select.value = info.names.includes(previousSelection) ? previousSelection : '';
+          sheetRefreshInFlight = false;
+          byId('refreshSheets').disabled = false;
+          setBusy(false);
+          if (showStatus) setStatus(`Sheet list refreshed. “${info.activeSheetName}” is the destination.`, 'success');
+        }).withFailureHandler(error => {
+          sheetRefreshInFlight = false;
+          byId('refreshSheets').disabled = false;
+          failRequest(error);
+        }).getAvailableSourceSheetInfo();
+      }
       function loadInitialData() {
-        google.script.run.withSuccessHandler(names => {
-          const select = byId('sheetSelect'); select.replaceChildren(); const placeholder = document.createElement('option'); placeholder.value = ''; placeholder.textContent = names.length ? 'Choose a source sheet' : 'No other sheets available'; select.appendChild(placeholder);
-          names.forEach(name => { const option = document.createElement('option'); option.value = name; option.textContent = name; select.appendChild(option); }); select.dataset.loaded = names.length ? 'true' : ''; setBusy(false); clearStatus();
-        }).withFailureHandler(failRequest).getAvailableSourceSheetNames();
+        refreshSheetList(false);
         google.script.run.withSuccessHandler(items => { formulaLibrary = items; renderFormulaLibrary(items[0] && items[0].id); }).withFailureHandler(failRequest).getFormulaLibrary();
       }
       byId('sheetSelect').addEventListener('change', event => { byId('updateScores').disabled = !event.target.value; });
+      byId('sheetSelect').addEventListener('focus', () => refreshSheetList(false));
+      byId('refreshSheets').addEventListener('click', () => refreshSheetList(true));
       byId('formulaSelect').addEventListener('change', event => { byId('fillFormula').disabled = !event.target.value; });
 
       byId('updateScores').addEventListener('click', () => {

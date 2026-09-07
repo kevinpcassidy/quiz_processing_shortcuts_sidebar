@@ -24,6 +24,8 @@ if (!html.includes('Spreadsheet Sidekick')) throw new Error('Sidebar must use th
 if (html.includes('Extend Two Selections')) throw new Error('Removed selection tool is still present.');
 if (!html.includes('id="formulaSelect"')) throw new Error('Formula picker is missing.');
 if (!html.includes('id="selectAllDepartures"')) throw new Error('Departure select-all control is missing.');
+if (!html.includes('id="refreshSheets"')) throw new Error('Sheet-list refresh control is missing.');
+if (!html.includes('https://venmo.com/u/KevinPCassidy1981')) throw new Error('Coffee link is missing.');
 
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
 if (scripts.length !== 1) throw new Error('Expected exactly one inline sidebar script.');

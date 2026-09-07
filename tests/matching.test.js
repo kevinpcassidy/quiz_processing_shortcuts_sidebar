@@ -9,7 +9,7 @@ const source = fs.readFileSync('shortcuts_sidebar.gs', 'utf8');
 const context = { console };
 vm.createContext(context);
 vm.runInContext(
-  `${source}\nthis.testApi = { normalizeMatchValue, buildRowMatches, buildHeaderLookup, buildRosterDiff, shiftFormulaA1 };`,
+  `${source}\nthis.testApi = { normalizeMatchValue, buildRowMatches, buildHeaderLookup, buildRosterDiff, buildSourceSheetInfo, shiftFormulaA1 };`,
   context,
 );
 const api = context.testApi;
@@ -77,6 +77,19 @@ test('identifies incoming and departing roster occurrences', () => {
     incoming: [{ sourceIndex: 2, name: 'Sam' }, { sourceIndex: 3, name: 'New Student' }],
     departures: [{ row: 4, name: 'Former Student' }],
   });
+});
+
+test('builds a fresh source list that excludes only the current destination', () => {
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(api.buildSourceSheetInfo(
+      ['Period 1 Master', 'Period 1 Grades', 'Period 2 Master'],
+      'Period 1 Grades',
+    ))),
+    {
+      activeSheetName: 'Period 1 Grades',
+      names: ['Period 1 Master', 'Period 2 Master'],
+    },
+  );
 });
 
 test('shifts relative formula references from the example destination', () => {
