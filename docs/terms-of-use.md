@@ -1,19 +1,19 @@
-# Terms of Use for Google Sheets Sidebar
+# Terms of Use for Spreadsheet Sidekick
 
 **Draft for publication at:**  
-<https://www.kevinsteachertech.com/google-sheets-sidebar/terms>
+<https://www.kevinsteachertech.com/spreadsheet-sidekick/terms-of-service>
 
 **Effective date:** [INSERT EFFECTIVE DATE]
 
-These Terms of Use (“Terms”) govern use of Google Sheets Sidebar (the “Add-on”),
+These Terms of Use (“Terms”) govern use of Spreadsheet Sidekick (the “Add-on”),
 a free educational resource published by Kevin Cassidy under the name Kevin's
 Teacher Tech (“we,” “us,” or “our”). By installing or using the Add-on, you agree
 to these Terms. If you do not agree, do not install or use the Add-on.
 
 ## The Add-on
 
-The Add-on provides spreadsheet convenience features, including extending cell
-selections, inserting formulas, and copying values between matching rows and
+The Add-on provides spreadsheet convenience features, including inserting
+formulas, maintaining roster rows, and copying values between matching rows and
 column headers in sheets (tabs) within the current Google spreadsheet.
 
 The Add-on is provided free of charge. We may modify, suspend, or discontinue any
@@ -60,7 +60,7 @@ Teacher Tech does not control the availability or operation of Google's services
 
 ## Privacy
 
-Our [Privacy Policy](https://www.kevinsteachertech.com/google-sheets-sidebar/privacy)
+Our [Privacy Policy](https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy)
 describes the information the Add-on accesses and how it is used. The Privacy
 Policy is incorporated into these Terms by reference.
 
@@ -124,7 +124,7 @@ Questions about these Terms or the Add-on may be sent to:
 
 **Kevin Cassidy / Kevin's Teacher Tech**  
 Email: <kpcassidy@gmail.com>  
-Product page: <https://www.kevinsteachertech.com/google-sheets-sidebar>
+Product page: <https://www.kevinsteachertech.com/spreadsheet-sidekick>
 
 > **Drafting note:** This document is a practical draft, not legal advice. Fill in
 > the effective date and governing jurisdiction and consider legal review before

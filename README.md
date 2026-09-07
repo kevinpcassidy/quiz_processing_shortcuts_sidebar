@@ -1,7 +1,7 @@
-# Google Sheets Sidebar
+# Spreadsheet Sidekick
 
-Google Sheets Sidebar is a free Google Sheets Editor add-on by Kevin's Teacher
-Tech. It provides quick selection, grade-formula, and master-roster update tools
+Spreadsheet Sidekick is a free Google Sheets Editor add-on by Kevin's Teacher
+Tech. It provides reusable grade-formula and master-roster update tools
 for the spreadsheet currently open in Google Sheets.
 
 ## Privacy-first authorization
@@ -27,9 +27,9 @@ and Google Workspace Marketplace steps.
 
 ## Public information
 
-- Product: <https://www.kevinsteachertech.com/google-sheets-sidebar>
-- Privacy: <https://www.kevinsteachertech.com/google-sheets-sidebar/privacy>
-- Terms: <https://www.kevinsteachertech.com/google-sheets-sidebar/terms>
+- Product: <https://www.kevinsteachertech.com/spreadsheet-sidekick>
+- Privacy: <https://www.kevinsteachertech.com/spreadsheet-sidekick/privacy-policy>
+- Terms: <https://www.kevinsteachertech.com/spreadsheet-sidekick/terms-of-service>
 - Support: <kpcassidy@gmail.com>
 
 Draft website copy is available in [docs/privacy-policy.md](docs/privacy-policy.md)

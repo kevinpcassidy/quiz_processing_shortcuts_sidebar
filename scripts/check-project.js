@@ -20,6 +20,18 @@ const html = fs.readFileSync('Sidebar.html', 'utf8');
 if (!/^<!doctype html>/i.test(html)) throw new Error('Sidebar.html needs a doctype.');
 if (!html.includes('role="status"')) throw new Error('Sidebar status must be accessible.');
 if (html.includes('.innerHTML')) throw new Error('Do not render server text with innerHTML.');
+if (!html.includes('Spreadsheet Sidekick')) throw new Error('Sidebar must use the product name.');
+if (html.includes('Extend Two Selections')) throw new Error('Removed selection tool is still present.');
+if (!html.includes('id="formulaSelect"')) throw new Error('Formula picker is missing.');
+if (!html.includes('id="selectAllDepartures"')) throw new Error('Departure select-all control is missing.');
+if (!html.includes('id="refreshSheets"')) throw new Error('Sheet-list refresh control is missing.');
+if (!html.includes('https://venmo.com/u/KevinPCassidy1981')) throw new Error('Coffee link is missing.');
+const externalLinks = [...html.matchAll(/<a\s+[^>]*href="https:\/\/[^">]+"[^>]*>/gi)];
+if (!externalLinks.length) throw new Error('Expected external sidebar links.');
+for (const [link] of externalLinks) {
+  if (!/target="_blank"/i.test(link)) throw new Error(`External link must open in a new tab: ${link}`);
+  if (!/rel="noopener noreferrer"/i.test(link)) throw new Error(`External link needs opener protection: ${link}`);
+}
 
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
 if (scripts.length !== 1) throw new Error('Expected exactly one inline sidebar script.');
